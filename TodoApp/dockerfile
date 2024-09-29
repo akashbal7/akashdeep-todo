@@ -1,0 +1,32 @@
+# Use the node:19.7.0-alpine base image
+FROM node:19.7.0-alpine
+
+# Set the environment variable NODE_ENV
+ENV NODE_ENV=production
+
+# Install Python, make, and g++ (required for node-gyp)
+RUN apk add --no-cache python3 make g++
+
+# Create a new directory in root called labone
+RUN mkdir /labone
+
+# Change the ownership to node user and node group
+RUN chown node:node /labone
+
+# Set this new folder as the working directory
+WORKDIR /labone
+
+# Set the user to node
+USER node
+
+# Copy all source files
+COPY --chown=node:node . /labone
+
+# Run the npm install command
+RUN npm install
+
+# Expose port 3000
+EXPOSE 3000
+
+# Set the default execution command
+CMD ["node", "src/index.js"]
